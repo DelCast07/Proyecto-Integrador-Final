@@ -1,0 +1,28 @@
+# ==========================================
+# 1. Archivos Compilados (¡Lo que más pesa!)
+# ==========================================
+*.class
+/bin/
+/build/
+
+# ==========================================
+# 2. Metadatos de Eclipse (Archivos locales)
+# ==========================================
+.metadata/
+.recommenders/
+RemoteSystemsTempFiles/
+
+# ==========================================
+# 3. Archivos temporales y de registro (Logs)
+# ==========================================
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+
+# ==========================================
+# 4. Archivos invisibles del Sistema Operativo
+# ==========================================
+.DS_Store
+Thumbs.db
