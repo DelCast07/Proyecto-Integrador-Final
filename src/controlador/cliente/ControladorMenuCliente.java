@@ -35,31 +35,35 @@ public class ControladorMenuCliente implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 
 			// ------------------ BOTÓN ELIMINAR ------------------
-			if (e.getSource().equals(vGestionClientes.getBtnEliminar())) {
-				// Obtenemos el ID de la fila seleccionada en la tabla
-				int idCliente = vGestionClientes.getIdClienteSeleccionado();
-				
-				// Si es -1, el usuario no hizo clic en ningún cliente de la tabla
-				if (idCliente == -1) {
-					JOptionPane.showMessageDialog(vGestionClientes, "Selecciona el cliente que desea eliminar");
-				} else {
-					// Pedimos confirmación para evitar borrar un cliente por accidente
-					int confirmacion = JOptionPane.showConfirmDialog(vGestionClientes,
-							"¿Seguro que deseas eliminar el cliente con ID " + idCliente + "?", "Confirmar",
-							JOptionPane.YES_NO_OPTION);
-					
-					// Si dice que sí, procedemos a borrar en la base de datos
-					if (confirmacion == JOptionPane.YES_OPTION) {
-						if (m.eliminarCliente(idCliente)) {
-							JOptionPane.showMessageDialog(vGestionClientes, "Cliente eliminado");
-							// Recargamos la tabla para que el cliente borrado desaparezca visualmente
-							vGestionClientes.cargarDatosClientes(m.recuperarClientes());
-						} else {
-							JOptionPane.showMessageDialog(vGestionClientes, "Error al eliminar el cliente");
+						if (e.getSource().equals(vGestionClientes.getBtnEliminar())) {
+							// Obtenemos el ID de la fila seleccionada en la tabla
+							int idCliente = vGestionClientes.getIdClienteSeleccionado();
+							
+							// Si es -1, el usuario no hizo clic en ningún cliente de la tabla
+							if (idCliente == -1) {
+								JOptionPane.showMessageDialog(vGestionClientes, "Selecciona el cliente que desea eliminar");
+							} else {
+								// --- ¡NUEVO AVISO DE CASCADA! ---
+								// Pedimos confirmación advirtiendo que se borrarán los trajes y las citas
+								int confirmacion = JOptionPane.showConfirmDialog(vGestionClientes,
+										"Si eliminas a este cliente, se borrarán automáticamente todos sus TRAJES y CITAS asociadas en la base de datos.\n¿Estás completamente seguro de que deseas continuar?", 
+										"Confirmar eliminación en cascada",
+										JOptionPane.YES_NO_OPTION,
+										JOptionPane.WARNING_MESSAGE);
+								
+								// Si dice que sí, procedemos a borrar en la base de datos
+								// (MySQL se encargará de borrar los trajes y citas por el ON DELETE CASCADE)
+								if (confirmacion == JOptionPane.YES_OPTION) {
+									if (m.eliminarCliente(idCliente)) {
+										JOptionPane.showMessageDialog(vGestionClientes, "Cliente, trajes y citas eliminados correctamente.");
+										// Recargamos la tabla para que el cliente borrado desaparezca visualmente
+										vGestionClientes.cargarDatosClientes(m.recuperarClientes());
+									} else {
+										JOptionPane.showMessageDialog(vGestionClientes, "Error al eliminar el cliente de la base de datos.");
+									}
+								}
+							}
 						}
-					}
-				}
-			}
 		// ------------------ BOTÓN CREAR ------------------
 		else if (e.getSource().equals(vGestionClientes.getBtnCrear())) {
 			// Abre la ventana para registrar un nuevo cliente

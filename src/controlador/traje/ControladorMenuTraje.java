@@ -31,24 +31,28 @@ public class ControladorMenuTraje implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) { 
 
-		if (e.getSource().equals(vGestionTrajes.getBtnEliminar())) { 
-			int idTraje = vGestionTrajes.getIdTrajeSeleccionado(); 
-			if (idTraje == -1) {
-				JOptionPane.showMessageDialog(vGestionTrajes, "Selecciona el traje que desea eliminar");
-			} else {
-				int confirmacion = JOptionPane.showConfirmDialog(vGestionTrajes,
-						"¿Seguro que deseas eliminar el traje con ID " + idTraje + "?", "Confirmar",
-						JOptionPane.YES_NO_OPTION);
-				if (confirmacion == JOptionPane.YES_OPTION) {
-					if (m.eliminarTraje(idTraje)) {
-						JOptionPane.showMessageDialog(vGestionTrajes, "Traje eliminado");
-						vGestionTrajes.cargarDatosTrajes(m.recuperarTrajes());
-						return;
+				if (e.getSource().equals(vGestionTrajes.getBtnEliminar())) {
+					int idTraje = vGestionTrajes.getIdTrajeSeleccionado();
+					
+					if (idTraje == -1) {
+						JOptionPane.showMessageDialog(vGestionTrajes, "Selecciona el traje que desea eliminar");
 					} else {
-						JOptionPane.showMessageDialog(vGestionTrajes, "Error al eliminar el traje");
+						// --- ¡EL AVISO QUE OS PIDIERON EN LA PRESENTACIÓN! ---
+						int confirmacion = JOptionPane.showConfirmDialog(vGestionTrajes,
+								"Se borrarán las citas asociadas a este traje, en caso de que existan.\n¿Deseas continuar?", 
+								"Confirmar eliminación de traje",
+								JOptionPane.YES_NO_OPTION,
+								JOptionPane.WARNING_MESSAGE);
+								
+						if (confirmacion == JOptionPane.YES_OPTION) {
+							if (m.eliminarTraje(idTraje)) {
+								JOptionPane.showMessageDialog(vGestionTrajes, "Traje y citas asociadas eliminados correctamente.");
+								vGestionTrajes.cargarDatosTrajes(m.recuperarTrajes());
+							} else {
+								JOptionPane.showMessageDialog(vGestionTrajes, "Error al eliminar el traje.");
+							}
+						}
 					}
-				}
-			}
 		} else if (e.getSource().equals(vGestionTrajes.getBtnCrear())) {
 			VentanaCrearTraje vCrearTraje = new VentanaCrearTraje(vGestionTrajes.getRangoUsuario(), rangoUsuario, idUsuario);
 			ControladorCrearTraje cCrearTraje = new ControladorCrearTraje(vCrearTraje, rangoUsuario, idUsuario); 
