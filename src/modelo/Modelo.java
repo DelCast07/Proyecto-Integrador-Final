@@ -854,5 +854,142 @@ public class Modelo {
 	    }
 	    return lista;
 	}
+	
+	
+//	/**
+//	 * Metodo para recuperar la lista completa de empleados
+//	 * @return
+//	 */
+//	public ArrayList<Empleado> recuperarEmpleados() {
+//		ArrayList<Empleado> empleados = new ArrayList<Empleado>();
+//		Connection conexion = getConexion();
+//		String query = "SELECT id_empleado, nombre, apodo, categoria, contrasena FROM EMPLEADO";
+//
+//		try {
+//			Statement st = conexion.createStatement();
+//			ResultSet rs = st.executeQuery(query);
+//
+//			while (rs.next()) {
+//				Empleado emp = new Empleado(
+//					rs.getInt("id_empleado"),
+//					rs.getString("nombre"),
+//					rs.getString("apodo"),
+//					rs.getString("categoria"),
+//					rs.getString("contrasena")
+//				);
+//				empleados.add(emp);
+//			}
+//		} catch (SQLException e) {
+//			JOptionPane.showMessageDialog(null, "Error de SQL al recuperar empleados: " + e.getMessage());
+//		} finally {
+//			cerrarConexion(conexion);
+//		}
+//		return empleados;
+//	}
+//
+//	/**
+//	 * Metodo para verificar si un empleado es responsable de alguna cita
+//	 * @param idEmpleado
+//	 * @return
+//	 */
+//	public boolean esEmpleadoResponsableDeCitas(int idEmpleado) {
+//		boolean responsable = false;
+//		String query = "SELECT COUNT(*) AS total FROM CITA WHERE id_empleado_responsable = ?";
+//		Connection conexion = getConexion();
+//
+//		try {
+//			PreparedStatement pst = conexion.prepareStatement(query);
+//			pst.setInt(1, idEmpleado);
+//			ResultSet rs = pst.executeQuery();
+//
+//			if (rs.next()) {
+//				int total = rs.getInt("total");
+//				if (total > 0) {
+//					responsable = true;
+//				}
+//			}
+//		} catch (SQLException e) {
+//			System.err.println("Error al verificar citas del empleado: " + e.getMessage());
+//		} finally {
+//			cerrarConexion(conexion);
+//		}
+//		return responsable;
+//	}
+//
+//	/**
+//	 * Metodo para crear un nuevo empleado
+//	 * @param emp
+//	 * @return
+//	 */
+//	public boolean crearEmpleado(Empleado emp) {
+//		String query = "INSERT INTO EMPLEADO (nombre, apodo, categoria, contrasena) VALUES (?, ?, ?, ?)";
+//		Connection conexion = getConexion();
+//
+//		try {
+//			PreparedStatement pst = conexion.prepareStatement(query);
+//			pst.setString(1, emp.getNombre());
+//			pst.setString(2, emp.getApodo());
+//			pst.setString(3, emp.getCategoría());
+//			pst.setString(4, emp.getContraseña());
+//
+//			int filasAfectadas = pst.executeUpdate();
+//			return filasAfectadas > 0;
+//		} catch (SQLException e) {
+//			System.err.println("Error al crear empleado: " + e.getMessage());
+//			return false;
+//		} finally {
+//			cerrarConexion(conexion);
+//		}
+//	}
+//
+//	/**
+//	 * Metodo para modificar los datos de un empleado
+//	 * @param emp
+//	 * @return
+//	 */
+//	public boolean modificarEmpleado(Empleado emp) {
+//		String query = "UPDATE EMPLEADO SET nombre = ?, apodo = ?, categoria = ?, contrasena = ? WHERE id_empleado = ?";
+//		Connection conexion = getConexion();
+//
+//		try {
+//			PreparedStatement pst = conexion.prepareStatement(query);
+//			pst.setString(1, emp.getNombre());
+//			pst.setString(2, emp.getApodo());
+//			pst.setString(3, emp.getCategoría());
+//			pst.setString(4, emp.getContraseña());
+//			pst.setInt(5, emp.getId_empleado());
+//
+//			int filasAfectadas = pst.executeUpdate();
+//			return filasAfectadas > 0;
+//		} catch (SQLException e) {
+//			System.err.println("Error al modificar empleado: " + e.getMessage());
+//			return false;
+//		} finally {
+//			cerrarConexion(conexion);
+//		}
+//	}
+//
+//	/**
+//	 * Metodo para eliminar un empleado
+//	 * @param idEmpleado
+//	 * @return
+//	 */
+//	public boolean eliminarEmpleado(int idEmpleado) {
+//		String query = "DELETE FROM EMPLEADO WHERE id_empleado = ?";
+//		Connection conexion = getConexion();
+//
+//		try {
+//			PreparedStatement pst = conexion.prepareStatement(query);
+//			pst.setInt(1, idEmpleado);
+//
+//			int filasAfectadas = pst.executeUpdate();
+//			return filasAfectadas > 0;
+//		} catch (SQLException e) {
+//			System.err.println("Error al eliminar empleado: " + e.getMessage());
+//			return false;
+//		} finally {
+//			cerrarConexion(conexion);
+//		}
+//	}
 
 }
