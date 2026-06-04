@@ -855,141 +855,104 @@ public class Modelo {
 	    return lista;
 	}
 	
-	
-//	/**
-//	 * Metodo para recuperar la lista completa de empleados
-//	 * @return
-//	 */
-//	public ArrayList<Empleado> recuperarEmpleados() {
-//		ArrayList<Empleado> empleados = new ArrayList<Empleado>();
-//		Connection conexion = getConexion();
-//		String query = "SELECT id_empleado, nombre, apodo, categoria, contrasena FROM EMPLEADO";
-//
-//		try {
-//			Statement st = conexion.createStatement();
-//			ResultSet rs = st.executeQuery(query);
-//
-//			while (rs.next()) {
-//				Empleado emp = new Empleado(
-//					rs.getInt("id_empleado"),
-//					rs.getString("nombre"),
-//					rs.getString("apodo"),
-//					rs.getString("categoria"),
-//					rs.getString("contrasena")
-//				);
-//				empleados.add(emp);
-//			}
-//		} catch (SQLException e) {
-//			JOptionPane.showMessageDialog(null, "Error de SQL al recuperar empleados: " + e.getMessage());
-//		} finally {
-//			cerrarConexion(conexion);
-//		}
-//		return empleados;
-//	}
-//
-//	/**
-//	 * Metodo para verificar si un empleado es responsable de alguna cita
-//	 * @param idEmpleado
-//	 * @return
-//	 */
-//	public boolean esEmpleadoResponsableDeCitas(int idEmpleado) {
-//		boolean responsable = false;
-//		String query = "SELECT COUNT(*) AS total FROM CITA WHERE id_empleado_responsable = ?";
-//		Connection conexion = getConexion();
-//
-//		try {
-//			PreparedStatement pst = conexion.prepareStatement(query);
-//			pst.setInt(1, idEmpleado);
-//			ResultSet rs = pst.executeQuery();
-//
-//			if (rs.next()) {
-//				int total = rs.getInt("total");
-//				if (total > 0) {
-//					responsable = true;
-//				}
-//			}
-//		} catch (SQLException e) {
-//			System.err.println("Error al verificar citas del empleado: " + e.getMessage());
-//		} finally {
-//			cerrarConexion(conexion);
-//		}
-//		return responsable;
-//	}
-//
-//	/**
-//	 * Metodo para crear un nuevo empleado
-//	 * @param emp
-//	 * @return
-//	 */
-//	public boolean crearEmpleado(Empleado emp) {
-//		String query = "INSERT INTO EMPLEADO (nombre, apodo, categoria, contrasena) VALUES (?, ?, ?, ?)";
-//		Connection conexion = getConexion();
-//
-//		try {
-//			PreparedStatement pst = conexion.prepareStatement(query);
-//			pst.setString(1, emp.getNombre());
-//			pst.setString(2, emp.getApodo());
-//			pst.setString(3, emp.getCategoría());
-//			pst.setString(4, emp.getContraseña());
-//
-//			int filasAfectadas = pst.executeUpdate();
-//			return filasAfectadas > 0;
-//		} catch (SQLException e) {
-//			System.err.println("Error al crear empleado: " + e.getMessage());
-//			return false;
-//		} finally {
-//			cerrarConexion(conexion);
-//		}
-//	}
-//
-//	/**
-//	 * Metodo para modificar los datos de un empleado
-//	 * @param emp
-//	 * @return
-//	 */
-//	public boolean modificarEmpleado(Empleado emp) {
-//		String query = "UPDATE EMPLEADO SET nombre = ?, apodo = ?, categoria = ?, contrasena = ? WHERE id_empleado = ?";
-//		Connection conexion = getConexion();
-//
-//		try {
-//			PreparedStatement pst = conexion.prepareStatement(query);
-//			pst.setString(1, emp.getNombre());
-//			pst.setString(2, emp.getApodo());
-//			pst.setString(3, emp.getCategoría());
-//			pst.setString(4, emp.getContraseña());
-//			pst.setInt(5, emp.getId_empleado());
-//
-//			int filasAfectadas = pst.executeUpdate();
-//			return filasAfectadas > 0;
-//		} catch (SQLException e) {
-//			System.err.println("Error al modificar empleado: " + e.getMessage());
-//			return false;
-//		} finally {
-//			cerrarConexion(conexion);
-//		}
-//	}
-//
-//	/**
-//	 * Metodo para eliminar un empleado
-//	 * @param idEmpleado
-//	 * @return
-//	 */
-//	public boolean eliminarEmpleado(int idEmpleado) {
-//		String query = "DELETE FROM EMPLEADO WHERE id_empleado = ?";
-//		Connection conexion = getConexion();
-//
-//		try {
-//			PreparedStatement pst = conexion.prepareStatement(query);
-//			pst.setInt(1, idEmpleado);
-//
-//			int filasAfectadas = pst.executeUpdate();
-//			return filasAfectadas > 0;
-//		} catch (SQLException e) {
-//			System.err.println("Error al eliminar empleado: " + e.getMessage());
-//			return false;
-//		} finally {
-//			cerrarConexion(conexion);
-//		}
-//	}
+	// ========================================================
+	// MÉTODOS PARA EMPLEADOS
+	// ========================================================
+
+	public ArrayList<modelo.Empleado> recuperarEmpleados() {
+		ArrayList<modelo.Empleado> empleados = new ArrayList<>();
+		Connection conexion = getConexion();
+		String query = "SELECT id_empleado, nombre, apodo, categoria, contrasena FROM EMPLEADO";
+
+		try {
+			java.sql.Statement st = conexion.createStatement();
+			java.sql.ResultSet rs = st.executeQuery(query);
+
+			while (rs.next()) {
+				// NOTA: Asegúrate de que tu clase Empleado se pueda instanciar y tenga estos
+				// setters
+				modelo.Empleado e = new modelo.Empleado(rs.getInt("id_empleado"), rs.getString("nombre"),
+						rs.getString("apodo"), rs.getString("categoria"), rs.getString("contrasena"));
+				empleados.add(e);
+			}
+		} catch (java.sql.SQLException e) {
+			System.err.println("Error al recuperar empleados: " + e.getMessage());
+		} finally {
+			cerrarConexion(conexion);
+		}
+		return empleados;
+	}
+
+	public boolean crearEmpleado(modelo.Empleado emp) {
+		String query = "INSERT INTO EMPLEADO (nombre, apodo, categoria, contrasena) VALUES (?, ?, ?, ?)";
+		Connection conexion = getConexion();
+		try {
+			java.sql.PreparedStatement pst = conexion.prepareStatement(query);
+			pst.setString(1, emp.getNombre());
+			pst.setString(2, emp.getApodo());
+			pst.setString(3, emp.getCategoría());
+			pst.setString(4, emp.getContraseña());
+			return pst.executeUpdate() > 0;
+		} catch (java.sql.SQLException sqlex) {
+			System.err.println("Error al crear empleado: " + sqlex.getMessage());
+			return false;
+		} finally {
+			cerrarConexion(conexion);
+		}
+	}
+
+	public boolean modificarEmpleado(modelo.Empleado emp) {
+		String query = "UPDATE EMPLEADO SET nombre = ?, apodo = ?, categoria = ?, contrasena = ? WHERE id_empleado = ?";
+		Connection conexion = getConexion();
+		try {
+			java.sql.PreparedStatement pst = conexion.prepareStatement(query);
+			pst.setString(1, emp.getNombre());
+			pst.setString(2, emp.getApodo());
+			pst.setString(3, emp.getCategoría());
+			pst.setString(4, emp.getContraseña());
+			pst.setInt(5, emp.getId_empleado());
+			return pst.executeUpdate() > 0;
+		} catch (java.sql.SQLException sqlex) {
+			System.err.println("Error al modificar empleado: " + sqlex.getMessage());
+			return false;
+		} finally {
+			cerrarConexion(conexion);
+		}
+	}
+
+	public boolean eliminarEmpleado(int idEmpleado) {
+		String query = "DELETE FROM EMPLEADO WHERE id_empleado = ?";
+		Connection conexion = getConexion();
+		try {
+			java.sql.PreparedStatement pst = conexion.prepareStatement(query);
+			pst.setInt(1, idEmpleado);
+			return pst.executeUpdate() > 0;
+		} catch (java.sql.SQLException sqlex) {
+			System.err.println("Error al eliminar empleado: " + sqlex.getMessage());
+			return false;
+		} finally {
+			cerrarConexion(conexion);
+		}
+	}
+
+	public boolean tieneCitasAsociadas(int idEmpleado) {
+		String query = "SELECT COUNT(*) AS total FROM CITA WHERE id_empleado_responsable = ? OR id_aprendiz1 = ? OR id_aprendiz2 = ?";
+		Connection conexion = getConexion();
+		try {
+			java.sql.PreparedStatement pst = conexion.prepareStatement(query);
+			pst.setInt(1, idEmpleado);
+			pst.setInt(2, idEmpleado);
+			pst.setInt(3, idEmpleado);
+			java.sql.ResultSet rs = pst.executeQuery();
+			if (rs.next()) {
+				return rs.getInt("total") > 0; // true si tiene 1 o más citas
+			}
+		} catch (java.sql.SQLException sqlex) {
+			System.err.println("Error al comprobar las citas del empleado: " + sqlex.getMessage());
+		} finally {
+			cerrarConexion(conexion);
+		}
+		return false;
+	}
 
 }

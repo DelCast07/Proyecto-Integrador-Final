@@ -23,6 +23,7 @@ public class VentanaMaestro extends JFrame {
 	private JButton btnCerrarSesion;
 	private String rangoUsuario;
 	private int idUsuario;
+	private JButton btnEmpleados;
 
 	public VentanaMaestro(String titulo, String rango, int id) {
 		super(titulo);
@@ -84,7 +85,7 @@ public class VentanaMaestro extends JFrame {
 		btnTalleres.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnTalleres.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnTalleres.setBackground(new Color(165, 191, 201));
-		btnTalleres.setBounds(360, 96, 110, 90);
+		btnTalleres.setBounds(300, 96, 110, 90);
 		pnlBarraHorizontal.add(btnTalleres);
 
 		btnClientes = new JButton("Clientes");
@@ -92,7 +93,7 @@ public class VentanaMaestro extends JFrame {
 		btnClientes.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnClientes.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnClientes.setBackground(new Color(165, 191, 201));
-		btnClientes.setBounds(480, 96, 110, 90);
+		btnClientes.setBounds(420, 96, 110, 90);
 		pnlBarraHorizontal.add(btnClientes);
 
 		btnCitas = new JButton("Citas");
@@ -100,7 +101,7 @@ public class VentanaMaestro extends JFrame {
 		btnCitas.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnCitas.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnCitas.setBackground(new Color(165, 191, 201));
-		btnCitas.setBounds(240, 96, 110, 90);
+		btnCitas.setBounds(180, 96, 110, 90);
 		pnlBarraHorizontal.add(btnCitas);
 
 		btnTrajes = new JButton("Trajes");
@@ -108,9 +109,17 @@ public class VentanaMaestro extends JFrame {
 		btnTrajes.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnTrajes.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnTrajes.setBackground(new Color(165, 191, 201));
-		btnTrajes.setBounds(600, 96, 110, 90);
+		btnTrajes.setBounds(540, 96, 110, 90);
 		pnlBarraHorizontal.add(btnTrajes);
-
+		
+		btnEmpleados = new JButton("Empleados");
+		btnEmpleados.setIcon(new ImageIcon(new ImageIcon("img\\empleado.png").getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH)));
+		btnEmpleados.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnEmpleados.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnEmpleados.setBackground(new Color(165, 191, 201));
+		btnEmpleados.setBounds(660, 96, 110, 90);
+		pnlBarraHorizontal.add(btnEmpleados);
+		
 		JLabel lblFondo = new JLabel(new ImageIcon("img\\fondo.jpeg"));
 		lblFondo.setBounds(0, 0, 944, 501);
 		getContentPane().add(lblFondo);
@@ -131,4 +140,5 @@ public class VentanaMaestro extends JFrame {
 	public JButton getBtnClientes() { return btnClientes; }
 	public JButton getBtnCerrarSesion() { return btnCerrarSesion; }
     public String getRangoUsuario() { return rangoUsuario; }
+    public JButton getBtnEmpleados() { return btnEmpleados; }
 }
