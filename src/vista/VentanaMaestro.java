@@ -132,6 +132,7 @@ public class VentanaMaestro extends JFrame {
 	    btnClientes.addActionListener(c);
 	    btnTrajes.addActionListener(c);
 	    btnCerrarSesion.addActionListener(c);
+	    btnEmpleados.addActionListener(c);
 	}
 	
 	public JButton getBtnCitas() { return btnCitas; }
@@ -141,4 +142,5 @@ public class VentanaMaestro extends JFrame {
 	public JButton getBtnCerrarSesion() { return btnCerrarSesion; }
     public String getRangoUsuario() { return rangoUsuario; }
     public JButton getBtnEmpleados() { return btnEmpleados; }
+    public int getIdUsuario() { return idUsuario; }
 }

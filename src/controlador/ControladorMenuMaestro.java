@@ -95,14 +95,18 @@ public class ControladorMenuMaestro implements ActionListener {
 	    }
 	    
 	    else if (e.getSource().equals(vMaestro.getBtnEmpleados())) {
-//	    	vista.VentanaGestionEmpleado vGestion = new vista.VentanaGestionEmpleado(rango, idEmpleado);
-//	    	controlador.empleado.ControladorMenuEmpleado cMenu = new controlador.empleado.ControladorMenuEmpleado(vGestion, rango, idEmpleado);
-//	    	vGestion.setControlador(cMenu);
-//
-//	    	vGestion.cargarDatosEmpleados(m.recuperarEmpleados());
-//	    	vGestion.setVisible(true);
-//	    	vMaestro.dispose();
-	    }
+			
+			String rango = vMaestro.getRangoUsuario();
+			int idEmpleado = vMaestro.getIdUsuario(); 
+			
+			vista.VentanaGestionEmpleado vGestion = new vista.VentanaGestionEmpleado(rango, idEmpleado);
+			controlador.empleado.ControladorMenuEmpleado cMenu = new controlador.empleado.ControladorMenuEmpleado(vGestion, rango, idEmpleado);
+			vGestion.setControlador(cMenu);
+
+			vGestion.cargarDatosEmpleados(m.recuperarEmpleados());
+			vGestion.setVisible(true);
+			vMaestro.dispose();
+		}
 	    
 	    
 	    
