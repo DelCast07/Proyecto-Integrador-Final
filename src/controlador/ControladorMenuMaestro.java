@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+
+import controlador.empleado.ControladorMenuEmpleado;
 import controlador.cita.ControladorMenuCita;
 import controlador.taller.ControladorMenuTaller;
 import controlador.traje.ControladorMenuTraje;
@@ -16,6 +18,8 @@ import vista.VentanaGestionTalleres;
 import vista.VentanaGestionTrajes;
 import vista.VentanaLogin;
 import vista.VentanaMaestro;
+import vista.VentanaGestionEmpleado;
+import controlador.empleado.ControladorMenuEmpleado;
 
 //Controlador principal para gestionar el menú del usuario con rango "Maestro"
 public class ControladorMenuMaestro implements ActionListener {
@@ -95,13 +99,13 @@ public class ControladorMenuMaestro implements ActionListener {
 	    }
 	    
 	    else if (e.getSource().equals(vMaestro.getBtnEmpleados())) {
-//	    	vista.VentanaGestionEmpleado vGestion = new vista.VentanaGestionEmpleado(rango, idEmpleado);
-//	    	controlador.empleado.ControladorMenuEmpleado cMenu = new controlador.empleado.ControladorMenuEmpleado(vGestion, rango, idEmpleado);
-//	    	vGestion.setControlador(cMenu);
-//
-//	    	vGestion.cargarDatosEmpleados(m.recuperarEmpleados());
-//	    	vGestion.setVisible(true);
-//	    	vMaestro.dispose();
+	        VentanaGestionEmpleado vGestion = new VentanaGestionEmpleado(rangoUsuario, idUsuario);
+	        controlador.empleado.ControladorMenuEmpleado cMenu = new controlador.empleado.ControladorMenuEmpleado(vGestion, rangoUsuario, idUsuario);
+	        vGestion.setControlador(cMenu);
+
+	        vGestion.cargarDatosEmpleados(m.recuperarEmpleados());
+	        vGestion.setVisible(true);
+	        vMaestro.dispose();
 	    }
 	    
 	    
