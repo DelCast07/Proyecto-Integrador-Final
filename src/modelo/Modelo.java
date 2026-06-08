@@ -148,19 +148,17 @@ public class Modelo {
 		ArrayList<Cita> citasPropias = new ArrayList<>();
 		Connection conexion = getConexion();
 
-		// Query mejorada: Traemos nombres de todos los implicados y filtramos por los 3 campos de empleado
+		// Query mejorada: Traemos nombres de todos los implicados y filtramos por los 3
+		// campos de empleado
 		String query = "SELECT c.*, cl.nombre AS nombre_cliente, ta.nombre_sala AS nombre_taller, "
 				+ "e.nombre AS nombre_empleado, tr.nombre AS nombre_traje, "
-				+ "a1.nombre AS nombre_ap1, a2.nombre AS nombre_ap2 " 
-				+ "FROM CITA c "
-				+ "JOIN CLIENTE cl ON c.id_cliente = cl.id_cliente " 
-				+ "JOIN TALLER ta ON c.id_taller = ta.id_taller "
+				+ "a1.nombre AS nombre_ap1, a2.nombre AS nombre_ap2 " + "FROM CITA c "
+				+ "JOIN CLIENTE cl ON c.id_cliente = cl.id_cliente " + "JOIN TALLER ta ON c.id_taller = ta.id_taller "
 				+ "JOIN TRAJE tr ON c.id_traje = tr.id_traje "
 				+ "JOIN EMPLEADO e ON c.id_empleado_responsable = e.id_empleado "
 				+ "LEFT JOIN EMPLEADO a1 ON c.id_aprendiz1 = a1.id_empleado "
 				+ "LEFT JOIN EMPLEADO a2 ON c.id_aprendiz2 = a2.id_empleado "
-				+ "WHERE c.id_empleado_responsable = ? OR c.id_aprendiz1 = ? OR c.id_aprendiz2 = ? "
-				+ "ORDER BY c.dia";
+				+ "WHERE c.id_empleado_responsable = ? OR c.id_aprendiz1 = ? OR c.id_aprendiz2 = ? " + "ORDER BY c.dia";
 
 		try {
 			PreparedStatement pst = conexion.prepareStatement(query);
@@ -272,30 +270,29 @@ public class Modelo {
 	 * @return
 	 */
 	public ArrayList<Traje> recuperarTrajes() {
-    ArrayList<Traje> trajes = new ArrayList<Traje>();
-    Connection conexion = getConexion();
-    
-    String query = "SELECT t.id_traje, t.nombre, t.estado, c.nombre AS nom_cliente " +
-                   "FROM TRAJE t " +
-                   "LEFT JOIN CLIENTE c ON t.id_cliente = c.id_cliente";
-    try {
-        Statement st = conexion.createStatement();
-        ResultSet rs = st.executeQuery(query);
-        while (rs.next()) {
-            Traje t = new Traje();
-            t.setId_traje(rs.getInt("id_traje"));
-            t.setNombre(rs.getString("nombre"));
-            t.setEstado(rs.getString("estado"));
-            t.setNombreCliente(rs.getString("nom_cliente")); 
-            trajes.add(t);
-        }
-    } catch (SQLException e) {
-        System.err.println("Error al recuperar trajes: " + e.getMessage());
-    } finally {
-        cerrarConexion(conexion);
-    }
-    return trajes;
-}
+		ArrayList<Traje> trajes = new ArrayList<Traje>();
+		Connection conexion = getConexion();
+
+		String query = "SELECT t.id_traje, t.nombre, t.estado, c.nombre AS nom_cliente " + "FROM TRAJE t "
+				+ "LEFT JOIN CLIENTE c ON t.id_cliente = c.id_cliente";
+		try {
+			Statement st = conexion.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				Traje t = new Traje();
+				t.setId_traje(rs.getInt("id_traje"));
+				t.setNombre(rs.getString("nombre"));
+				t.setEstado(rs.getString("estado"));
+				t.setNombreCliente(rs.getString("nom_cliente"));
+				trajes.add(t);
+			}
+		} catch (SQLException e) {
+			System.err.println("Error al recuperar trajes: " + e.getMessage());
+		} finally {
+			cerrarConexion(conexion);
+		}
+		return trajes;
+	}
 
 	/**
 	 * Método para rellenar el combobox de trajes en la pagina crearCitas
@@ -414,21 +411,22 @@ public class Modelo {
 	 * @return
 	 */
 	public boolean eliminarCliente(int idCliente) {
-    String query = "DELETE FROM CLIENTE WHERE id_cliente = ?";
-    Connection conexion = getConexion();
-    try {
-        PreparedStatement pst = conexion.prepareStatement(query);
-        pst.setInt(1, idCliente);
-        int resultado = pst.executeUpdate();
-        return resultado > 0;
-    } catch (SQLException sqlex) {
-        JOptionPane.showMessageDialog(null, "No se puede eliminar el cliente porque tiene registros asociados: " + sqlex.getErrorCode());
-        System.err.println("Código de error SQL: " + sqlex.getErrorCode());
-        return false;
-    } finally {
-        cerrarConexion(conexion);
-    }
-}
+		String query = "DELETE FROM CLIENTE WHERE id_cliente = ?";
+		Connection conexion = getConexion();
+		try {
+			PreparedStatement pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCliente);
+			int resultado = pst.executeUpdate();
+			return resultado > 0;
+		} catch (SQLException sqlex) {
+			JOptionPane.showMessageDialog(null,
+					"No se puede eliminar el cliente porque tiene registros asociados: " + sqlex.getErrorCode());
+			System.err.println("Código de error SQL: " + sqlex.getErrorCode());
+			return false;
+		} finally {
+			cerrarConexion(conexion);
+		}
+	}
 
 	/**
 	 * Método para modificar el cliente
@@ -660,21 +658,21 @@ public class Modelo {
 	 * @return
 	 */
 	public boolean crearTraje(Traje traje) {
-		String query = "INSERT INTO TRAJE (nombre, estado, id_cliente) VALUES (?, ?, ?)";		
+		String query = "INSERT INTO TRAJE (nombre, estado, id_cliente) VALUES (?, ?, ?)";
 		Connection conexion = getConexion();
-		
+
 		try {
-	        PreparedStatement pst = conexion.prepareStatement(query);
-	        pst.setString(1, traje.getNombre());
-	        pst.setString(2, traje.getEstado());
-	        pst.setInt(3, traje.getId_cliente());
-	        return pst.executeUpdate() > 0;
-	    } catch (SQLException sqlex) {
-	        System.err.println("Error al crear el traje: " + sqlex.getMessage());
-	        return false;
-	    } finally {
-	        cerrarConexion(conexion);
-	    }
+			PreparedStatement pst = conexion.prepareStatement(query);
+			pst.setString(1, traje.getNombre());
+			pst.setString(2, traje.getEstado());
+			pst.setInt(3, traje.getId_cliente());
+			return pst.executeUpdate() > 0;
+		} catch (SQLException sqlex) {
+			System.err.println("Error al crear el traje: " + sqlex.getMessage());
+			return false;
+		} finally {
+			cerrarConexion(conexion);
+		}
 	}
 
 	/**
@@ -832,68 +830,83 @@ public class Modelo {
 		}
 		return nombre;
 	}
-	
+
 	/**
 	 * Metodo para obtener los nombres de los empleados con rango de aprendiz
+	 * 
 	 * @return
 	 */
 	public ArrayList<String> recuperarNombresAprendices() {
-	    ArrayList<String> lista = new ArrayList<>();
-	    // Filtramos por la categoría específica
-	    String sql = "SELECT nombre FROM EMPLEADO WHERE categoria = 'Aprendiz'";
+		ArrayList<String> lista = new ArrayList<>();
+		// Filtramos por la categoría específica
+		String sql = "SELECT nombre FROM EMPLEADO WHERE categoria = 'Aprendiz'";
 
-	    try (Connection con = getConexion();
-	         Statement st = con.createStatement();
-	         ResultSet rs = st.executeQuery(sql)) {
+		try (Connection con = getConexion();
+				Statement st = con.createStatement();
+				ResultSet rs = st.executeQuery(sql)) {
 
-	        while (rs.next()) {
-	            lista.add(rs.getString("nombre"));
-	        }
-	    } catch (SQLException e) {
-	        System.err.println("Error al recuperar nombres de aprendices: " + e.getMessage());
-	    }
-	    return lista;
+			while (rs.next()) {
+				lista.add(rs.getString("nombre"));
+			}
+		} catch (SQLException e) {
+			System.err.println("Error al recuperar nombres de aprendices: " + e.getMessage());
+		}
+		return lista;
 	}
-	
-	// ========================================================
-	// MÉTODOS PARA EMPLEADOS
-	// ========================================================
 
+	// MÉTODOS PARA EMPLEADOS
+
+	// Obtiene la lista de todos los empleados guardados en la base de datos
 	public ArrayList<modelo.Empleado> recuperarEmpleados() {
+		// Creamos una lista vacía para guardar los empleados que encontremos
 		ArrayList<modelo.Empleado> empleados = new ArrayList<>();
+
+		// Nos conectamos a la base de datos y preparamos la consulta SQL
 		Connection conexion = getConexion();
 		String query = "SELECT id_empleado, nombre, apodo, categoria, contrasena FROM EMPLEADO";
 
 		try {
 			java.sql.Statement st = conexion.createStatement();
+			// Ejecutamos la consulta para pedir los datos
 			java.sql.ResultSet rs = st.executeQuery(query);
 
+			// Recorremos cada fila de resultados que nos devuelve la base de datos
 			while (rs.next()) {
-				// NOTA: Asegúrate de que tu clase Empleado se pueda instanciar y tenga estos
-				// setters
+				// Creamos un objeto Empleado con los datos de la fila actual
 				modelo.Empleado e = new modelo.Empleado(rs.getInt("id_empleado"), rs.getString("nombre"),
 						rs.getString("apodo"), rs.getString("categoria"), rs.getString("contrasena"));
+				// Lo añadimos a nuestra lista
 				empleados.add(e);
 			}
 		} catch (java.sql.SQLException e) {
+			// Si falla, mostramos el error en la consola
 			System.err.println("Error al recuperar empleados: " + e.getMessage());
 		} finally {
+			// Nos aseguramos de cerrar siempre la conexión al terminar
 			cerrarConexion(conexion);
 		}
+		// Devolvemos la lista llena (o vacía si hubo un error o no hay datos)
 		return empleados;
 	}
 
+	// Guarda un nuevo empleado en la base de datos
 	public boolean crearEmpleado(modelo.Empleado emp) {
+		// Consulta SQL para insertar los datos
 		String query = "INSERT INTO EMPLEADO (nombre, apodo, categoria, contrasena) VALUES (?, ?, ?, ?)";
 		Connection conexion = getConexion();
+
 		try {
+			// Preparamos la consulta y rellenamos las "?" con los datos del empleado
 			java.sql.PreparedStatement pst = conexion.prepareStatement(query);
 			pst.setString(1, emp.getNombre());
 			pst.setString(2, emp.getApodo());
 			pst.setString(3, emp.getCategoría());
 			pst.setString(4, emp.getContraseña());
+
+			// Ejecutamos la inserción y devolvemos 'true' si se guardó correctamente
 			return pst.executeUpdate() > 0;
 		} catch (java.sql.SQLException sqlex) {
+			// Si hay error, avisamos y devolvemos 'false'
 			System.err.println("Error al crear empleado: " + sqlex.getMessage());
 			return false;
 		} finally {
@@ -901,16 +914,22 @@ public class Modelo {
 		}
 	}
 
+	// Actualiza los datos de un empleado que ya existe en la base de datos
 	public boolean modificarEmpleado(modelo.Empleado emp) {
+		// Consulta SQL para actualizar los datos basándonos en su ID
 		String query = "UPDATE EMPLEADO SET nombre = ?, apodo = ?, categoria = ?, contrasena = ? WHERE id_empleado = ?";
 		Connection conexion = getConexion();
+
 		try {
+			// Rellenamos las "?" con los nuevos datos
 			java.sql.PreparedStatement pst = conexion.prepareStatement(query);
 			pst.setString(1, emp.getNombre());
 			pst.setString(2, emp.getApodo());
 			pst.setString(3, emp.getCategoría());
 			pst.setString(4, emp.getContraseña());
-			pst.setInt(5, emp.getId_empleado());
+			pst.setInt(5, emp.getId_empleado()); // La última "?" es el ID para saber a quién modificar
+
+			// Si la actualización afectó a más de 0 filas, fue un éxito (true)
 			return pst.executeUpdate() > 0;
 		} catch (java.sql.SQLException sqlex) {
 			System.err.println("Error al modificar empleado: " + sqlex.getMessage());
@@ -920,12 +939,18 @@ public class Modelo {
 		}
 	}
 
+	// Borra a un empleado de la base de datos usando su ID
 	public boolean eliminarEmpleado(int idEmpleado) {
+		// Consulta SQL para borrar
 		String query = "DELETE FROM EMPLEADO WHERE id_empleado = ?";
 		Connection conexion = getConexion();
+
 		try {
 			java.sql.PreparedStatement pst = conexion.prepareStatement(query);
+			// Le decimos qué ID queremos borrar
 			pst.setInt(1, idEmpleado);
+
+			// Devuelve true si logró borrarlo
 			return pst.executeUpdate() > 0;
 		} catch (java.sql.SQLException sqlex) {
 			System.err.println("Error al eliminar empleado: " + sqlex.getMessage());
@@ -935,23 +960,31 @@ public class Modelo {
 		}
 	}
 
+	// Comprueba si un empleado está asignado a alguna cita
 	public boolean tieneCitasAsociadas(int idEmpleado) {
+		// Cuenta cuántas citas tienen a este empleado como responsable o aprendiz
 		String query = "SELECT COUNT(*) AS total FROM CITA WHERE id_empleado_responsable = ? OR id_aprendiz1 = ? OR id_aprendiz2 = ?";
 		Connection conexion = getConexion();
+
 		try {
 			java.sql.PreparedStatement pst = conexion.prepareStatement(query);
+			// Ponemos el ID del empleado en los 3 lugares donde puede aparecer
 			pst.setInt(1, idEmpleado);
 			pst.setInt(2, idEmpleado);
 			pst.setInt(3, idEmpleado);
+
 			java.sql.ResultSet rs = pst.executeQuery();
+			// Si hay resultados, miramos el número total de citas
 			if (rs.next()) {
-				return rs.getInt("total") > 0; // true si tiene 1 o más citas
+				// Devuelve true si el total es mayor a 0 (es decir, sí tiene citas)
+				return rs.getInt("total") > 0;
 			}
 		} catch (java.sql.SQLException sqlex) {
 			System.err.println("Error al comprobar las citas del empleado: " + sqlex.getMessage());
 		} finally {
 			cerrarConexion(conexion);
 		}
+		// Si algo falla o no tiene, devolvemos false
 		return false;
 	}
 

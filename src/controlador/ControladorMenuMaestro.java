@@ -93,7 +93,7 @@ public class ControladorMenuMaestro implements ActionListener {
 	        vLogin.setVisible(true);
 	        vMaestro.dispose();
 	    }
-	    
+	    // Comprueba si el botón pulsado fue el de "Empleados"
 	    else if (e.getSource().equals(vMaestro.getBtnEmpleados())) {
 			
 			String rango = vMaestro.getRangoUsuario();

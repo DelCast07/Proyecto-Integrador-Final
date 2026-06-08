@@ -29,14 +29,14 @@ public class ControladorMenuEmpleado implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		// ------------------ BOTÓN ELIMINAR (LA REGLA DE LA PROFESORA) ------------------
+		// BOTÓN ELIMINAR
 		if (e.getSource().equals(vista.getBtnEliminar())) {
-			int idEmpleado = vista.getIdEmpleadoSeleccionado(); // <-- Asegúrate de crear este getter en la vista
+			int idEmpleado = vista.getIdEmpleadoSeleccionado(); 
 			
 			if (idEmpleado == -1) {
 				JOptionPane.showMessageDialog(vista, "Selecciona el empleado que deseas eliminar.");
 			} else {
-				// REGLA: Si tiene citas, salta advertencia y BLOQUEA
+				// Si tiene citas, salta advertencia y BLOQUEA
 				if (m.tieneCitasAsociadas(idEmpleado)) {
 					JOptionPane.showMessageDialog(vista, 
 							"❌ No se puede borrar a este empleado.\nActualmente es responsable (o aprendiz) en una o más citas.\nPor favor, cambia a los responsables de esas citas primero.", 
@@ -60,7 +60,7 @@ public class ControladorMenuEmpleado implements ActionListener {
 				}
 			}
 			
-		// ------------------ BOTÓN CREAR ------------------
+		// BOTÓN CREAR
 		} else if (e.getSource().equals(vista.getBtnCrear())) {
 			VentanaCrearEmpleado vCrear = new VentanaCrearEmpleado(rangoUsuario, idUsuario);
 			ControladorCrearEmpleado cCrear = new ControladorCrearEmpleado(vCrear, idUsuario);
@@ -68,7 +68,7 @@ public class ControladorMenuEmpleado implements ActionListener {
 			vCrear.setVisible(true);
 			vista.dispose();
 			
-		// ------------------ BOTÓN MODIFICAR ------------------
+		// BOTÓN MODIFICAR 
 		} else if (e.getSource().equals(vista.getBtnModificar())) {
 			int idEmpleado = vista.getIdEmpleadoSeleccionado();
 			if (idEmpleado == -1) {
@@ -87,7 +87,7 @@ public class ControladorMenuEmpleado implements ActionListener {
 				vista.dispose();
 			}
 			
-		// ------------------ BOTÓN ATRÁS ------------------
+		// BOTÓN ATRÁS 
 		} else if (e.getSource().equals(vista.getBtnAtras())) {
 			VentanaMaestro vMaestro = new VentanaMaestro("Menú Principal", rangoUsuario, idUsuario);
 			ControladorMenuMaestro cMaestro = new ControladorMenuMaestro(vMaestro, rangoUsuario, idUsuario);
@@ -95,7 +95,7 @@ public class ControladorMenuEmpleado implements ActionListener {
 			vMaestro.setVisible(true);
 			vista.dispose();
 			
-		// ------------------ BOTÓN CERRAR SESIÓN ------------------
+		// BOTÓN CERRAR SESIÓN 
 		} else if (e.getSource().equals(vista.getBtnCerrarSesion())) {
 			VentanaLogin vLogin = new VentanaLogin("Inicio de Sesión");
 			ControladorLogin c = new ControladorLogin(vLogin);
