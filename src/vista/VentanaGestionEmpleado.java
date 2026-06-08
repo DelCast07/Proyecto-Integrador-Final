@@ -2,6 +2,7 @@ package vista;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -88,7 +89,7 @@ public class VentanaGestionEmpleado extends JFrame {
 
 		btnAtras = new JButton("");
 		ImageIcon iconoAtras = new ImageIcon("img\\flecha_izq.png");
-		java.awt.Image imgAtras = iconoAtras.getImage().getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH);
+		Image imgAtras = iconoAtras.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 		btnAtras.setIcon(new ImageIcon(imgAtras));
 		btnAtras.setBackground(new Color(165, 191, 201));
 		btnAtras.setBounds(22, 11, 30, 30);
@@ -105,14 +106,8 @@ public class VentanaGestionEmpleado extends JFrame {
 		scrollPane.setBounds(10, 10, 762, 216);
 		pnlBarraHorizontal_1.add(scrollPane);
 
-		modeloTabla = new DefaultTableModel();
-		modeloTabla.addColumn("ID");
-		modeloTabla.addColumn("NOMBRE");
-		modeloTabla.addColumn("APODO");
-		modeloTabla.addColumn("CATEGORÍA");
-		modeloTabla.addColumn("CONTRASEÑA");
-
-		table = new JTable(modeloTabla);
+		// Dejamos la JTable inicializada vacía
+		table = new JTable();
 		scrollPane.setViewportView(table);
 
 		JLabel lblFondo = new JLabel(new ImageIcon("img\\fondo.jpeg"));
@@ -129,16 +124,33 @@ public class VentanaGestionEmpleado extends JFrame {
 	}
 
 	public void cargarDatosEmpleados(ArrayList<Empleado> datos) {
-		modeloTabla.setRowCount(0);
+		String[] columnas = {"ID", "NOMBRE", "APODO", "CATEGORÍA", "CONTRASEÑA"};
+		
+		// Estilo idéntico a Trajes: Hacemos que la tabla no sea editable directamente
+		modeloTabla = new DefaultTableModel(columnas, 0) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+
 		for (Empleado e : datos) {
-			Object[] fila = new Object[5];
-			fila[0] = e.getId_empleado();
-			fila[1] = e.getNombre();
-			fila[2] = e.getApodo();
-			fila[3] = e.getCategoría();
-			fila[4] = e.getContraseña();
+			Object[] fila = {
+				e.getId_empleado(),
+				e.getNombre(),
+				e.getApodo(),
+				e.getCategoría(),
+				e.getContraseña()
+			};
 			modeloTabla.addRow(fila);
 		}
+		
+		table.setModel(modeloTabla);
+		
+		// Ocultar columna ID (columna 0) para que funcione en segundo plano de forma invisible
+		table.getColumnModel().getColumn(0).setMinWidth(0);
+		table.getColumnModel().getColumn(0).setMaxWidth(0);
+		table.getColumnModel().getColumn(0).setPreferredWidth(0);
 	}
 
 	// GETTERS
@@ -150,13 +162,14 @@ public class VentanaGestionEmpleado extends JFrame {
 	public String getRangoUsuario() { return rangoUsuario; }
 	public int getIdUsuario() { return idUsuario; }
 
-	// Métodos para obtener los datos de la fila seleccionada
+	// Métodos para obtener los datos de la fila seleccionada en segundo plano
 	public int getIdEmpleadoSeleccionado() {
 		int fila = table.getSelectedRow();
-		return (fila == -1) ? -1 : (int) modeloTabla.getValueAt(fila, 0);
+		return (fila == -1) ? -1 : (int) table.getValueAt(fila, 0);
 	}
-	public String getNombreSeleccionado() { return modeloTabla.getValueAt(table.getSelectedRow(), 1).toString(); }
-	public String getApodoSeleccionado() { return modeloTabla.getValueAt(table.getSelectedRow(), 2).toString(); }
-	public String getCategoriaSeleccionada() { return modeloTabla.getValueAt(table.getSelectedRow(), 3).toString(); }
-	public String getContrasenaSeleccionada() { return modeloTabla.getValueAt(table.getSelectedRow(), 4).toString(); }
+	
+	public String getNombreSeleccionado() { return table.getValueAt(table.getSelectedRow(), 1).toString(); }
+	public String getApodoSeleccionado() { return table.getValueAt(table.getSelectedRow(), 2).toString(); }
+	public String getCategoriaSeleccionada() { return table.getValueAt(table.getSelectedRow(), 3).toString(); }
+	public String getContrasenaSeleccionada() { return table.getValueAt(table.getSelectedRow(), 4).toString(); }
 }
