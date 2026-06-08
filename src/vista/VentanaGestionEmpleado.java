@@ -126,7 +126,6 @@ public class VentanaGestionEmpleado extends JFrame {
 	public void cargarDatosEmpleados(ArrayList<Empleado> datos) {
 		String[] columnas = {"ID", "NOMBRE", "APODO", "CATEGORÍA", "CONTRASEÑA"};
 		
-		// Estilo idéntico a Trajes: Hacemos que la tabla no sea editable directamente
 		modeloTabla = new DefaultTableModel(columnas, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -147,10 +146,15 @@ public class VentanaGestionEmpleado extends JFrame {
 		
 		table.setModel(modeloTabla);
 		
-		// Ocultar columna ID (columna 0) para que funcione en segundo plano de forma invisible
+		// 1. Ocultar columna ID (columna 0) para que funcione en segundo plano
 		table.getColumnModel().getColumn(0).setMinWidth(0);
 		table.getColumnModel().getColumn(0).setMaxWidth(0);
 		table.getColumnModel().getColumn(0).setPreferredWidth(0);
+
+		// 2. Ocultar columna CONTRASEÑA (columna 4) para que sea invisible para el usuario
+		table.getColumnModel().getColumn(4).setMinWidth(0);
+		table.getColumnModel().getColumn(4).setMaxWidth(0);
+		table.getColumnModel().getColumn(4).setPreferredWidth(0);
 	}
 
 	// GETTERS
@@ -162,14 +166,16 @@ public class VentanaGestionEmpleado extends JFrame {
 	public String getRangoUsuario() { return rangoUsuario; }
 	public int getIdUsuario() { return idUsuario; }
 
-	// Métodos para obtener los datos de la fila seleccionada en segundo plano
+	// Métodos para obtener los datos de la fila seleccionada en segundo plano utilizando el modelo
 	public int getIdEmpleadoSeleccionado() {
 		int fila = table.getSelectedRow();
-		return (fila == -1) ? -1 : (int) table.getValueAt(fila, 0);
+		return (fila == -1) ? -1 : (int) modeloTabla.getValueAt(fila, 0);
 	}
 	
-	public String getNombreSeleccionado() { return table.getValueAt(table.getSelectedRow(), 1).toString(); }
-	public String getApodoSeleccionado() { return table.getValueAt(table.getSelectedRow(), 2).toString(); }
-	public String getCategoriaSeleccionada() { return table.getValueAt(table.getSelectedRow(), 3).toString(); }
-	public String getContrasenaSeleccionada() { return table.getValueAt(table.getSelectedRow(), 4).toString(); }
+	public String getNombreSeleccionado() { return modeloTabla.getValueAt(table.getSelectedRow(), 1).toString(); }
+	public String getApodoSeleccionado() { return modeloTabla.getValueAt(table.getSelectedRow(), 2).toString(); }
+	public String getCategoriaSeleccionada() { return modeloTabla.getValueAt(table.getSelectedRow(), 3).toString(); }
+	
+	// Sigue funcionando perfectamente recuperando el dato oculto de la columna 4
+	public String getContrasenaSeleccionada() { return modeloTabla.getValueAt(table.getSelectedRow(), 4).toString(); }
 }

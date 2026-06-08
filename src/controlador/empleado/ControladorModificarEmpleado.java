@@ -12,6 +12,7 @@ public class ControladorModificarEmpleado implements ActionListener {
 
 	private VentanaModificarEmpleado vista;
 	private int idUsuario;
+	private boolean oculto = true; // Variable para controlar si la contraseña está tapada o visible
 
 	public ControladorModificarEmpleado(VentanaModificarEmpleado vista, int id) {
 		this.vista = vista;
@@ -22,52 +23,64 @@ public class ControladorModificarEmpleado implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Modelo m = new Modelo();
 
+		// Si el usuario pulsa el botón de ir atrás
 		if (e.getSource().equals(vista.getBtnAtras())) {
 			volver(m);
+			
+		// Si el usuario pulsa el botón para mostrar/ocultar contraseñas
+		} else if (e.getSource().equals(vista.getBtnVerContraseña())) {
+			if (oculto) {
+				vista.cambiarMascaraContraseñas((char) 0); // Muestra el texto plano en las casillas
+				oculto = false;
+			} else {
+				vista.cambiarMascaraContraseñas(vista.getEcoPorDefecto()); // Restaura los puntos originales
+				oculto = true;
+			}
+			
+		// Si el usuario pulsa el botón de guardar cambios
 		} else if (e.getSource().equals(vista.getBtnGuardarCambios())) {
 			
-			// Validar que los campos de texto base no estén vacíos
-			if (vista.getNombre().isEmpty() || vista.getApodo().isEmpty() || vista.getContrasenaAnterior().isEmpty()) {
+			// Validar que los campos obligatorios de texto base no estén vacíos
+			if (vista.getNombre().isEmpty() || vista.getApodo().isEmpty() || vista.getContraseñaAnterior().isEmpty()) {
 				JOptionPane.showMessageDialog(vista, "Rellena todos los campos obligatorios (Nombre, Apodo y Contraseña Anterior).");
 				return;
 			}
 
-			// Comprobar que la contraseña anterior sea la correcta para poder autorizar cambios
-			if (!vista.getContrasenaAnterior().equals(vista.getContrasenaOriginal())) {
+			// Comprobar que la contraseña anterior introducida coincida con la registrada en la base de datos
+			if (!vista.getContraseñaAnterior().equals(vista.getContraseñaOriginal())) {
 				JOptionPane.showMessageDialog(vista, "La contraseña anterior introducida no es correcta.");
 				return;
 			}
 
-			// Determinar qué contraseña se va a guardar
-			String contrasenaFinal = vista.getContrasenaOriginal(); // Por defecto mantiene la de siempre
-			String nueva = vista.getContrasenaNueva();
-			String repetir = vista.getContrasenaRepetir();
+			// Determinar qué contraseña se va a registrar (mantiene la original por defecto)
+			String contraseñaFinal = vista.getContraseñaOriginal(); 
+			String nueva = vista.getContraseñaNueva();
+			String repetir = vista.getContraseñaRepetir();
 
-			// Si el usuario ha intentado rellenar una nueva contraseña
+			// Si el usuario ha rellenado las casillas para cambiar la clave
 			if (!nueva.isEmpty() || !repetir.isEmpty()) {
 				// Validamos que ambas casillas sean idénticas
 				if (!nueva.equals(repetir)) {
 					JOptionPane.showMessageDialog(vista, "Las contraseñas no coinciden.");
 					return;
 				}
-				// Si coincide, asignamos la nueva clave para meterla en la base de datos
-				contrasenaFinal = nueva;
+				// Si coinciden correctamente, asignamos la nueva clave
+				contraseñaFinal = nueva;
 			}
 
-			// aqui se hace el objeto Empleado con la clave validada
+			// Se crea el objeto Empleado con la clave validada
 			Empleado emp = new Empleado(
 				vista.getIdEmpleado(), 
 				vista.getNombre(), 
 				vista.getApodo(), 
 				vista.getCategoria(), 
-				contrasenaFinal
+				contraseñaFinal
 			);
 
-			// se actualizan los datos en el Modelo SQL
+			// Se actualizan los datos en el modelo de la base de datos
 			if (m.modificarEmpleado(emp)) {
 				JOptionPane.showMessageDialog(vista, "Empleado modificado correctamente.");
 				volver(m);
-			//si pasa cualquier cosa como que se repite algún caracter o demasiado largo o ya existe. pues salta error 
 			} else {
 				JOptionPane.showMessageDialog(vista, "Error al modificar empleado.");
 			}

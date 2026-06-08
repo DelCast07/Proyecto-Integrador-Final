@@ -3,49 +3,47 @@ package vista;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-
 import controlador.empleado.ControladorModificarEmpleado;
 
 public class VentanaModificarEmpleado extends JFrame {
 
 	private String rangoUsuario;
-	private int idEmpleado; // El empleado que estamos editando
-	private String contrasenaOriginal; // Guardamos la contraseña actual para comprobaciones
+	private int idEmpleado; 
+	private String contraseñaOriginal; 
 	
 	private JTextField txtNombre;
 	private JTextField txtApodo;
 	private JComboBox<String> cbCategoria;
+	//esto es para las contraseñas
+	private JPasswordField txtContraseñaAnterior;
+	private JPasswordField txtContraseñaNueva;
+	private JPasswordField txtContraseñaRepetir;
+	private JButton btnVerContraseña;
 	
-	// Campos nuevos de contraseña protegidos
-	private JPasswordField txtContrasenaAnterior;
-	private JPasswordField txtContrasenaNueva;
-	private JPasswordField txtContrasenaRepetir;
-	private JButton btnVerContrasena;
-	private boolean mostrandoContrasena = false;
+
+	private char ecoPorDefecto;
 	
 	private JButton btnGuardarCambios;
 	private JButton btnAtras;
 
-	public VentanaModificarEmpleado(String rango, int idEmp, String nombre, String apodo, String categoria, String contrasena) {
+	public VentanaModificarEmpleado(String rango, int idEmp, String nombre, String apodo, String categoria, String contraseña) {
 		this.rangoUsuario = rango;
 		this.idEmpleado = idEmp;
-		this.contrasenaOriginal = contrasena;
+		this.contraseñaOriginal = contraseña;
 		
 		inicializarComponentes();
 		configInicial();
 		
-		// Rellenamos los campos con los datos actuales
+		// Rellenamos los campos con los datos actuales del empleado
 		txtNombre.setText(nombre);
 		txtApodo.setText(apodo);
 		cbCategoria.setSelectedItem(categoria);
-		txtContrasenaAnterior.setText(contrasena);
+		txtContraseñaAnterior.setText(contraseña);
 	}
 
+	// Configuración de las propiedades base de la ventana
 	private void configInicial() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
@@ -53,12 +51,15 @@ public class VentanaModificarEmpleado extends JFrame {
 		setLocationRelativeTo(null);
 	}
 
+	// Inicialización y posicionamiento de todos los elementos visuales en el contenedor
 	private void inicializarComponentes() {
+		// Footer
 		JPanel pnlFooter = new JPanel();
 		pnlFooter.setBackground(new Color(72, 119, 109));
 		pnlFooter.setBounds(0, 481, 944, 20);
 		getContentPane().add(pnlFooter);
 
+		// Copyright
 		JLabel lblCopyright = new JLabel("© 2026 Payo-Vallecano, Inc. Todos los derechos reservados");
 		lblCopyright.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCopyright.setForeground(Color.WHITE);
@@ -71,17 +72,20 @@ public class VentanaModificarEmpleado extends JFrame {
 		pnlBarraHorizontal.setLayout(null);
 		getContentPane().add(pnlBarraHorizontal);
 
+		// TÍTULO DE LA PANTALLA
 		JLabel lblTitulo = new JLabel("Modificar Empleado");
 		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 34));
 		lblTitulo.setBounds(22, 63, 400, 40);
 		getContentPane().add(lblTitulo);
 
+		// BOTÓN GUARDAR
 		btnGuardarCambios = new JButton("Guardar");
 		btnGuardarCambios.setFont(new Font("Verdana", Font.PLAIN, 14));
 		btnGuardarCambios.setBackground(new Color(165, 191, 201));
 		btnGuardarCambios.setBounds(22, 231, 109, 30);
 		pnlBarraHorizontal.add(btnGuardarCambios);
 
+		// BOTÓN ATRÁS
 		btnAtras = new JButton("");
 		ImageIcon iconoAtras = new ImageIcon("img\\flecha_izq.png");
 		Image imgAtras = iconoAtras.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
@@ -90,16 +94,26 @@ public class VentanaModificarEmpleado extends JFrame {
 		btnAtras.setBounds(22, 11, 30, 30);
 		getContentPane().add(btnAtras);
 
-		// Formulario
+		// EL FORMULARIO RECUADRADO
 		JPanel pnlFormulario = new JPanel();
 		pnlFormulario.setBorder(new LineBorder(new Color(68, 68, 68), 1, true));
 		pnlFormulario.setBackground(new Color(165, 191, 201));
 		pnlFormulario.setBounds(139, 25, 782, 236);
 		pnlFormulario.setLayout(null);
 		pnlBarraHorizontal.add(pnlFormulario);
+		
+		// TEXTO DE INFO SUPERIOR (Nombre e ID dinámicos)
+		JLabel lblEmpleadoInfo = new JLabel("", SwingConstants.CENTER);
+		lblEmpleadoInfo.setFont(new Font("Verdana", Font.BOLD, 16));
+		lblEmpleadoInfo.setForeground(new Color(50, 50, 50));
+		lblEmpleadoInfo.setBounds(10, 2, 762, 25); 
+		pnlFormulario.add(lblEmpleadoInfo);
+		
+		Timer t = new Timer(1, e -> lblEmpleadoInfo.setText(txtNombre.getText() + " - " + idEmpleado));
+		t.setRepeats(false);
+		t.start();
 
-		//  COLUMNA IZQUIERDA 
-		// Nombre
+		// COLUMNA IZQUIERDA (DATOS BASE)
 		JLabel lblNombre = new JLabel("Nombre:");
 		lblNombre.setFont(new Font("Verdana", Font.BOLD, 14));
 		lblNombre.setBounds(30, 30, 100, 30);
@@ -110,7 +124,6 @@ public class VentanaModificarEmpleado extends JFrame {
 		txtNombre.setBounds(140, 30, 200, 30);
 		pnlFormulario.add(txtNombre);
 
-		// Apodo
 		JLabel lblApodo = new JLabel("Apodo:");
 		lblApodo.setFont(new Font("Verdana", Font.BOLD, 14));
 		lblApodo.setBounds(30, 90, 100, 30);
@@ -121,7 +134,6 @@ public class VentanaModificarEmpleado extends JFrame {
 		txtApodo.setBounds(140, 90, 200, 30);
 		pnlFormulario.add(txtApodo);
 
-		// Categoría
 		JLabel lblCategoria = new JLabel("Categoría:");
 		lblCategoria.setFont(new Font("Verdana", Font.BOLD, 14));
 		lblCategoria.setBounds(30, 150, 100, 30);
@@ -132,89 +144,81 @@ public class VentanaModificarEmpleado extends JFrame {
 		cbCategoria.setBounds(140, 150, 200, 30);
 		pnlFormulario.add(cbCategoria);
 
-		// COLUMNA DERECHA
-		// Contraseña Anterior
-		JLabel lblContrasenaAnterior = new JLabel("pass Anterior:");
-		lblContrasenaAnterior.setFont(new Font("Verdana", Font.BOLD, 13));
-		lblContrasenaAnterior.setBounds(380, 30, 130, 30);
-		pnlFormulario.add(lblContrasenaAnterior);
+		// COLUMNA DERECHA (CONTRASEÑAS GESTIONADAS)
+		JLabel lblContraseñaAnterior = new JLabel("pass Anterior:");
+		lblContraseñaAnterior.setFont(new Font("Verdana", Font.BOLD, 13));
+		lblContraseñaAnterior.setBounds(380, 30, 130, 30);
+		pnlFormulario.add(lblContraseñaAnterior);
 		
-		txtContrasenaAnterior = new JPasswordField();
-		txtContrasenaAnterior.setFont(new Font("Verdana", Font.PLAIN, 14));
-		txtContrasenaAnterior.setBounds(520, 30, 180, 30);
-		pnlFormulario.add(txtContrasenaAnterior);
+		txtContraseñaAnterior = new JPasswordField();
+		txtContraseñaAnterior.setFont(new Font("Verdana", Font.PLAIN, 14));
+		txtContraseñaAnterior.setBounds(520, 30, 180, 30);
+		pnlFormulario.add(txtContraseñaAnterior);
 
-		// Botón ojo para ver/ocultar contraseña
-		btnVerContrasena = new JButton("👁");
-		btnVerContrasena.setFont(new Font("Lucida Sans Unicode", Font.PLAIN, 12));
-		btnVerContrasena.setBounds(705, 30, 45, 30);
-		btnVerContrasena.setBackground(new Color(210, 225, 230));
-		pnlFormulario.add(btnVerContrasena);
+		// Guardamos el formato de ocultación nativo por defecto (los puntos)
+		ecoPorDefecto = txtContraseñaAnterior.getEchoChar();
+
+		// BOTÓN OJO INTEGRADO
+		btnVerContraseña = new JButton("o");
+		btnVerContraseña.setFont(new Font("Lucida Sans Unicode", Font.PLAIN, 12));
+		btnVerContraseña.setBounds(705, 30, 45, 30);
+		btnVerContraseña.setBackground(new Color(210, 225, 230));
+		pnlFormulario.add(btnVerContraseña);
+
+		JLabel lblContraseñaNueva = new JLabel("pass Nueva:");
+		lblContraseñaNueva.setFont(new Font("Verdana", Font.BOLD, 13));
+		lblContraseñaNueva.setBounds(380, 90, 130, 30);
+		pnlFormulario.add(lblContraseñaNueva);
 		
-		btnVerContrasena.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mostrandoContrasena) {
-					txtContrasenaAnterior.setEchoChar('●');
-					txtContrasenaNueva.setEchoChar('●');
-					txtContrasenaRepetir.setEchoChar('●');
-					mostrandoContrasena = false;
-				} else {
-					txtContrasenaAnterior.setEchoChar((char) 0);
-					txtContrasenaNueva.setEchoChar((char) 0);
-					txtContrasenaRepetir.setEchoChar((char) 0);
-					mostrandoContrasena = true;
-				}
-			}
-		});
+		txtContraseñaNueva = new JPasswordField();
+		txtContraseñaNueva.setFont(new Font("Verdana", Font.PLAIN, 14));
+		txtContraseñaNueva.setBounds(520, 90, 180, 30);
+		pnlFormulario.add(txtContraseñaNueva);
 
-		// Contraseña Nueva
-		JLabel lblContrasenaNueva = new JLabel("pass Nueva:");
-		lblContrasenaNueva.setFont(new Font("Verdana", Font.BOLD, 13));
-		lblContrasenaNueva.setBounds(380, 90, 130, 30);
-		pnlFormulario.add(lblContrasenaNueva);
+		JLabel lblContraseñaRepetir = new JLabel("Repetir pass:");
+		lblContraseñaRepetir.setFont(new Font("Verdana", Font.BOLD, 13));
+		lblContraseñaRepetir.setBounds(380, 150, 130, 30);
+		pnlFormulario.add(lblContraseñaRepetir);
 		
-		txtContrasenaNueva = new JPasswordField();
-		txtContrasenaNueva.setFont(new Font("Verdana", Font.PLAIN, 14));
-		txtContrasenaNueva.setBounds(520, 90, 180, 30);
-		pnlFormulario.add(txtContrasenaNueva);
+		txtContraseñaRepetir = new JPasswordField();
+		txtContraseñaRepetir.setFont(new Font("Verdana", Font.PLAIN, 14));
+		txtContraseñaRepetir.setBounds(520, 150, 180, 30);
+		pnlFormulario.add(txtContraseñaRepetir);
 
-		// Repetir Contraseña
-		JLabel lblContrasenaRepetir = new JLabel("Repetir pass:");
-		lblContrasenaRepetir.setFont(new Font("Verdana", Font.BOLD, 13));
-		lblContrasenaRepetir.setBounds(380, 150, 130, 30);
-		pnlFormulario.add(lblContrasenaRepetir);
-		
-		txtContrasenaRepetir = new JPasswordField();
-		txtContrasenaRepetir.setFont(new Font("Verdana", Font.PLAIN, 14));
-		txtContrasenaRepetir.setBounds(520, 150, 180, 30);
-		pnlFormulario.add(txtContrasenaRepetir);
-
-		// Fondo de la ventana
+		// IMAGEN DE FONDO
 		JLabel lblFondo = new JLabel(new ImageIcon("img\\fondo.jpeg"));
 		lblFondo.setBounds(0, 0, 944, 501);
 		getContentPane().add(lblFondo);
 	}
 
+	// Método para vincular los escuchadores con los botones desde el controlador externo
 	public void setControlador(ControladorModificarEmpleado c) {
 		btnGuardarCambios.addActionListener(c);
 		btnAtras.addActionListener(c);
+		btnVerContraseña.addActionListener(c); 
 	}
 
-	// GETTERS estándar
+	// Método para cambiar simultáneamente la máscara de las tres casillas de contraseñas
+	public void cambiarMascaraContraseñas(char caracter) {
+		txtContraseñaAnterior.setEchoChar(caracter);
+		txtContraseñaNueva.setEchoChar(caracter);
+		txtContraseñaRepetir.setEchoChar(caracter);
+	}
+
+	// --- GETTERS ESTÁNDAR PARA EL CONTROLADOR ---
+	public char getEcoPorDefecto() { return ecoPorDefecto; }
 	public JButton getBtnGuardarCambios() { return btnGuardarCambios; }
 	public JButton getBtnAtras() { return btnAtras; }
+	public JButton getBtnVerContraseña() { return btnVerContraseña; }
 	public String getRangoUsuario() { return rangoUsuario; }
 	public int getIdEmpleado() { return idEmpleado; }
-	public String getContrasenaOriginal() { return contrasenaOriginal; }
+	public String getContraseñaOriginal() { return contraseñaOriginal; }
 
-	// Métodos mapeados para los campos de texto normales
 	public String getNombre() { return txtNombre.getText(); }
 	public String getApodo() { return txtApodo.getText(); }
 	public String getCategoria() { return cbCategoria.getSelectedItem().toString(); }
 	
-	// Getters nuevos para manejar contraseñas seguras
-	public String getContrasenaAnterior() { return new String(txtContrasenaAnterior.getPassword()); }
-	public String getContrasenaNueva() { return new String(txtContrasenaNueva.getPassword()); }
-	public String getContrasenaRepetir() { return new String(txtContrasenaRepetir.getPassword()); }
+	public String getContraseñaAnterior() { return new String(txtContraseñaAnterior.getPassword()); }
+	public String getContraseñaNueva() { return new String(txtContraseñaNueva.getPassword()); }
+	public String getContraseñaRepetir() { return new String(txtContraseñaRepetir.getPassword()); }
 }
