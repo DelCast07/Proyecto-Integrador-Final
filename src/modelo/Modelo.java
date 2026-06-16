@@ -314,6 +314,33 @@ public class Modelo {
 		}
 		return lista;
 	}
+	/**
+	 * Método para recuperar solo los trajes que pertenecen a un cliente específico
+	 */
+	public ArrayList<String> recuperarNombresTrajesPorCliente(String nombreCliente) {
+	    ArrayList<String> lista = new ArrayList<>();
+	    // Buscamos los trajes cuyo id_cliente coincida con el id del nombre del cliente recibido
+	    String query = "SELECT t.nombre FROM TRAJE t " +
+	                   "JOIN CLIENTE c ON t.id_cliente = c.id_cliente " +
+	                   "WHERE c.nombre = ?";
+	    try {
+	        Connection con = getConexion();
+	        PreparedStatement ps = con.prepareStatement(query);
+	        ps.setString(1, nombreCliente);
+	        ResultSet rs = ps.executeQuery();
+	        while (rs.next()) {
+	            lista.add(rs.getString("nombre"));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return lista;
+	}
+	
+	
+	
+	
+	
 
 	/**
 	 * Método para rellenar el combobox de empleados en la pagina crearCitas
@@ -987,5 +1014,85 @@ public class Modelo {
 		// Si algo falla o no tiene, devolvemos false
 		return false;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Comprueba si un taller está ocupado (Útil para CREAR citas)
+	 */
+	public boolean existeSolapamientoTaller(int idTaller, java.util.Date fecha, java.sql.Time horaInicio, int duracionHoras) {
+	    boolean solapado = false;
+	    Connection conexion = getConexion();
+	    java.sql.Date fechaSQL = new java.sql.Date(fecha.getTime());
+	    
+	    // Multiplicamos por 3600 porque la duración  está expresada en HORAS directas
+	    String query = "SELECT COUNT(*) AS total FROM CITA WHERE id_taller = ? AND dia = ? AND ("
+	                 + "? < ADDTIME(hora, SEC_TO_TIME(duracion * 3600)) AND "
+	                 + "ADDTIME(?, SEC_TO_TIME(? * 3600)) > hora)";
+	                 
+	    try {
+	        PreparedStatement ps = conexion.prepareStatement(query);
+	        ps.setInt(1, idTaller);
+	        ps.setDate(2, fechaSQL);
+	        ps.setTime(3, horaInicio);
+	        ps.setTime(4, horaInicio);
+	        ps.setInt(5, duracionHoras);
+	        
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	            solapado = rs.getInt("total") > 0;
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("Error al comprobar solapamiento: " + e.getMessage());
+	    } finally {
+	        cerrarConexion(conexion);
+	    }
+	    return solapado;
+	}
+
+	public boolean existeSolapamientoTallerModificar(int idTaller, java.util.Date fecha, java.sql.Time horaInicio, int duracionHoras, int idCitaActual) {
+	    boolean solapado = false;
+	    Connection conexion = getConexion();
+	    java.sql.Date fechaSQL = new java.sql.Date(fecha.getTime());
+	    
+	    // Multiplicamos por 3600 porque la duración esta expresada en HORAS directas
+	    String query = "SELECT COUNT(*) AS total FROM CITA WHERE id_taller = ? AND dia = ? AND id_cita != ? AND ("
+	                 + "? < ADDTIME(hora, SEC_TO_TIME(duracion * 3600)) AND "
+	                 + "ADDTIME(?, SEC_TO_TIME(? * 3600)) > hora)";
+	                 
+	    try {
+	        PreparedStatement ps = conexion.prepareStatement(query);
+	        ps.setInt(1, idTaller);
+	        ps.setDate(2, fechaSQL);
+	        ps.setInt(3, idCitaActual);
+	        ps.setTime(4, horaInicio);
+	        ps.setTime(5, horaInicio);
+	        ps.setInt(6, duracionHoras);
+	        
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	            solapado = rs.getInt("total") > 0;
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("Error al comprobar solapamiento en modificar: " + e.getMessage());
+	    } finally {
+	        cerrarConexion(conexion);
+	    }
+	    return solapado;
+	}
+	
+
+	
 
 }
+
+
+
+
+
+

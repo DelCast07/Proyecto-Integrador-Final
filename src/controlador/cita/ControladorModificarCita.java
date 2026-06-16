@@ -12,6 +12,7 @@ import vista.VentanaAsignarAprendices;
 import vista.VentanaGestionCita;
 import vista.VentanaLogin;
 import controlador.ControladorLogin;
+
 //Controlador que gestiona la pantalla para editar o modificar una cita existente
 public class ControladorModificarCita implements ActionListener {
 
@@ -31,24 +32,50 @@ public class ControladorModificarCita implements ActionListener {
 		this.idUsuario = id;
 		this.modelo = new Modelo();
 
-		// 1. Al cargar, rellenamos los combos de la vista (importante para que se pueda
-		// seleccionar)
+		// 1. Al cargar, rellenamos los combos de la vista
 		cargarCombos();
+		// Le decimos al ComboBox de clientes de la pantalla que avise a este controlador cuando cambie
+		this.vista.getCmbNombreCliente().addActionListener(this);
 	}
 
-		// Método auxiliar para llenar las listas desplegables (ComboBox) con los datos de la base de datos
-		private void cargarCombos() {
-			ArrayList<String> clientes = modelo.recuperarNombresClientes();
-			ArrayList<String> talleres = modelo.recuperarNombresTalleres();
-			ArrayList<String> empleados = modelo.recuperarNombresEmpleados();
-			ArrayList<String> trajes = modelo.recuperarNombresTrajes();
-			vista.rellenarComboBox(clientes, talleres, empleados, trajes);
-		}
+	// Método para llenar las listas desplegables con los datos de la base de datos
+	private void cargarCombos() {
+		ArrayList<String> clientes = modelo.recuperarNombresClientes();
+		ArrayList<String> talleres = modelo.recuperarNombresTalleres();
+		ArrayList<String> empleados = modelo.recuperarNombresEmpleados();
+		ArrayList<String> trajes = modelo.recuperarNombresTrajes();
+		vista.rellenarComboBox(clientes, talleres, empleados, trajes);
+	}
 	
-	// Método que detecta cuándo el usuario hace clic en los botones
+	// Método que detecta cuándo el usuario hace clic o cambia selecciones
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Modelo m = new Modelo();
+
+		// FILTRADO VISUAL EN CALIENTE: DETECTAR EL CAMBIO DE CLIENTE
+
+		if (e.getSource().equals(vista.getCmbNombreCliente())) {
+			if (vista.getCmbNombreCliente().getSelectedItem() != null) {
+				String clienteSeleccionado = vista.getCmbNombreCliente().getSelectedItem().toString();
+				
+				// Desactivamos temporalmente el listener del combo de trajes 
+				vista.getCmbNombreTraje().removeActionListener(this);
+				
+				// Limpiamos los trajes viejos por completo para que desaparezcan
+				vista.getCmbNombreTraje().removeAllItems();
+				
+				// Consultamos al modelo los trajes exclusivos de este cliente
+				ArrayList<String> trajesFiltrados = m.recuperarNombresTrajesPorCliente(clienteSeleccionado);
+				
+				// Los volcamos dinámicamente en el menú desplegable
+				for (String traje : trajesFiltrados) {
+					vista.getCmbNombreTraje().addItem(traje);
+				}
+				
+				// Volvemos a activar el listener del combo de trajes
+				vista.getCmbNombreTraje().addActionListener(this);
+			}
+		}
 
 		// LOGICA DE BOTONES
 		if (e.getSource().equals(vista.getBtnAsignarAprendices())) {
@@ -115,6 +142,12 @@ public class ControladorModificarCita implements ActionListener {
 				int idTallerCmb = m.obtenerIdTallerPorNombre(vista.getCmbNombreTaller().getSelectedItem().toString());
 				int idResponsableCmb = m
 						.obtenerIdEmpleadoPorNombre(vista.getCmbNombreResponsable().getSelectedItem().toString());
+				
+				// Validación preventiva: que no intente guardar si no hay ningún traje seleccionado
+				if (vista.getCmbNombreTraje().getSelectedItem() == null) {
+					JOptionPane.showMessageDialog(vista, "Error: El cliente seleccionado no tiene ningún traje asociado.", "Error de validación", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
 				int idTrajeCmb = m.obtenerIdTrajePorNombre(vista.getCmbNombreTraje().getSelectedItem().toString());
 
 				// Asignamos esos IDs a nuestra cita
@@ -127,6 +160,14 @@ public class ControladorModificarCita implements ActionListener {
 				cita.setId_aprendiz1(idAprendiz1Seleccionado);
 				cita.setId_aprendiz2(idAprendiz2Seleccionado);
 
+				// VALIDACIÓN: Evitar duplicados en el taller ignorándose a sí misma
+				int idCitaActual = Integer.parseInt(vista.getTxtIdCita().getText());
+				if (m.existeSolapamientoTallerModificar(idTallerCmb, cita.getDia(), cita.getHora(), cita.getDuracion(), idCitaActual)) {
+				    JOptionPane.showMessageDialog(vista, "El taller seleccionado ya está ocupado por otra cita en ese rango de horario.", "Taller no disponible", JOptionPane.ERROR_MESSAGE);
+				    return; // Detiene el flujo para que no modifique nada
+				}
+				
+				
 				// Ejecutamos la actualización en la base de datos
 				if (m.modificarCita(cita)) {
 					// Si todo va bien, avisamos
@@ -149,7 +190,7 @@ public class ControladorModificarCita implements ActionListener {
 				}
 
 			} catch (Exception ex) {
-				// Si falla algo (ej. algún dato vacío o incorrecto), lanzamos un aviso
+				// Si falla algo lanzamos avso
 				JOptionPane.showMessageDialog(vista, "Error al procesar los datos: " + ex.getMessage());
 				ex.printStackTrace();
 			}
